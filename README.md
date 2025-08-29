@@ -1,6 +1,22 @@
 # vibecpp - AI Task Automation Tool
 A powerful CLI tool for automating tasks using AI, primarily focused on code writing but customizable for any task through its flexible architecture.
 
+## Quick Start
+
+Recommended: We recommend using Docker as it provides the necessary file access permissions for vibecpp to interact with files in your project directory.
+Get started quickly with:
+```bash
+docker pull ghcr.io/cdeving/vibecpp:latest
+```
+To start docker in your current folder:
+```bash
+docker run --rm -it \
+-v ~/.vibecpp:/root/.vibecpp \
+-v ./:/app/project \
+ghcr.io/cdeving/vibecpp:latest
+```
+This is a minimal container for running vibecpp. To interact with additional tools, you will have to modify the image.
+
 ## Overview
 
 vibecpp leverages LLM to automate repetitive tasks, with a focus on code generation and editing. It supports multiple LLM providers including local Ollama instances and cloud providers (OpenAI compatible API), making it versatile for different deployment scenarios.
