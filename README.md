@@ -27,7 +27,7 @@ vibecpp leverages LLM to automate repetitive tasks, with a focus on code generat
 - **Flexible Interaction:**
 Interactive chat mode for conversation-based tasks
 Single message input via stdin `(cat somefile.txt | vibecpp)`
-- **Customizable Workflows:** Extend functionality with custom tools using `.custom.vibecpp`
+- **Customizable Workflows:** Extend functionality with custom tools using `~/.custom.vibecpp`. [Custom tools documentation](./TOOLS.md)
 
 ## Configuration System
 
@@ -39,6 +39,7 @@ JSON config system: `~/.vibecpp` and ability to override values with flags and o
 --model     # Specific LLM model name
 --server    # API endpoint URL
 --api-key   # Authentication key for cloud providers (can be empty/random for ollama)
+--notools   # Disable default tools (use custom tools only).
 
 # Debugging
 -d          # Enable debug logging

@@ -28,12 +28,14 @@ int main(int argc, char** argv)
     std::string clientModel = {};
     std::string outgoingMessage = {};
     bool debugEnabled = false;
+    bool disableDefaultTools = false;
 
     CLI::App cli{"vibecpp"};
     cli.add_option("--type", clientType, "LLM client type. Supported types: \"ollama\", \"openai\".");
     cli.add_option("--model", clientModel, "LLM name.");
     cli.add_option("--server", clientEndpoint, "LLM API endpoint URL.");
     cli.add_option("--api-key", clientApiKey, "LLM API key.");
+    cli.add_flag("--notools", disableDefaultTools, "Disable default tools (use custom tools only).");
     cli.add_flag("-d", debugEnabled, "Enable debug logging mode.");
 
     try
@@ -93,6 +95,10 @@ int main(int argc, char** argv)
 
     client->setModel(clientModel);
     auto conv = std::make_shared<ConversationLLM>();
+
+    if(!disableDefaultTools)
+        conv->loadDefaultTools();
+
     conv->loadToolsFromFile(agentUtils::getHomeDirectory() + ".custom.vibecpp");
     conv->setClient(std::move(client));
     conv->setPrintCallback([](const std::string& incoming){

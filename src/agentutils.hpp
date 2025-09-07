@@ -109,41 +109,4 @@ namespace agentUtils
         }
         return std::string(homeDir) + "/";
     }
-
-    void parseFromFile(const std::string &configPath, std::vector<std::unique_ptr<agentTool>>& tools)
-    {
-        try
-        {
-            std::ifstream file(configPath);
-            if (!file.is_open())
-            {
-                spdlog::error("Could not open tools config file.");
-                return;
-            }
-
-            nlohmann::json config = nlohmann::json::parse(file);
-
-            for (const auto &toolJson : config["tools"])
-            {
-                std::string name = toolJson.value("name", "");
-                std::string description = toolJson.value("description", "");
-                std::string arguments = toolJson.value("arguments", "");
-                std::string realCommand = toolJson.value("realCommand", "");
-
-                if(name.empty() || description.empty() || realCommand.empty())
-                {
-                    spdlog::error("Failing to parse tool, name, description and realCommand cannot be empty: {}", toolJson.dump());
-                    continue;
-                }
-
-                spdlog::info("Registered custom tool: {}", name);
-
-                tools.push_back(std::make_unique<customTool>(name, description, arguments, realCommand));
-            }
-        }
-        catch (const std::exception &e)
-        {
-            throw std::runtime_error("Error parsing config: " + std::string(e.what()));
-        }
-    }
 };

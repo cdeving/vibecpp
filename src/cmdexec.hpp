@@ -22,7 +22,7 @@ public:
             std::string escapedArg = escapeArgument(arg);
             cmdStream << " " << escapedArg;
         }
-        
+        spdlog::info("Executing: {}", cmdStream.str());
         std::string fullCommand = cmdStream.str();
         return executeRaw(fullCommand);
     }

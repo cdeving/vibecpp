@@ -12,7 +12,6 @@
 #include "readtool.hpp"
 #include "writetool.hpp"
 #include "treetool.hpp"
-#include "npmtool.hpp"
 #include "gittool.hpp"
 #include "rmtool.hpp"
 
@@ -29,18 +28,22 @@ private:
 public:
     ConversationLLM()
     {
+
+    }
+
+    void loadDefaultTools()
+    {
         tools.push_back(std::make_unique<grepTool>());
         tools.push_back(std::make_unique<readFileTool>());
         tools.push_back(std::make_unique<writeToFileTool>());
         tools.push_back(std::make_unique<directoryTreeTool>());
-        tools.push_back(std::make_unique<npmTool>());
         tools.push_back(std::make_unique<gitTool>());
         tools.push_back(std::make_unique<rmTool>());
     }
 
     void loadToolsFromFile(const std::string& filename)
     {
-        agentUtils::parseFromFile(filename, tools);
+        customTool::parseFromFile(filename, tools);
     }
 
     auto getConversation()
