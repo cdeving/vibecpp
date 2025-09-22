@@ -7,3 +7,6 @@
 [submodule "deps/spdlog"]
 	path = deps/spdlog
 	url = https://github.com/gabime/spdlog.git
+[submodule "deps/cpp-linenoise"]
+	path = deps/cpp-linenoise
+	url = https://github.com/yhirose/cpp-linenoise
