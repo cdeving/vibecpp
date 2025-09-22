@@ -13,7 +13,7 @@ OBJ_FILES_DEBUG := $(patsubst $(SRC_DIR)/%.cpp,$(BUILD_DIR)/debug/%.o,$(CPP_FILE
 OBJ_FILES_RELEASE := $(patsubst $(SRC_DIR)/%.cpp,$(BUILD_DIR)/release/%.o,$(CPP_FILES)) \
                      $(patsubst $(SRC_DIR)/%.c,$(BUILD_DIR)/release/%.o,$(C_FILES))
 
-CPPFLAGS := -I deps/spdlog/include/ -I deps/json/include/ -I deps/CLI11/include/ -MMD -MP 
+CPPFLAGS := -I deps/spdlog/include/ -I deps/json/include/ -I deps/CLI11/include/ -I deps/cpp-linenoise/ -MMD -MP 
 CFLAGS := -Wall -Wextra
 
 DEBUG_FLAGS := -g -O0 -DDEBUG

@@ -8,6 +8,7 @@
 #include "llmclient.hpp"
 #include "oaiclient.hpp"
 #include "conversation.hpp"
+#include "linenoise.hpp"
 
 bool isPipeInput() {
     struct stat stat_buf;
@@ -29,13 +30,17 @@ int main(int argc, char** argv)
     std::string outgoingMessage = {};
     bool debugEnabled = false;
     bool disableDefaultTools = false;
+    bool disableCustomTools = false;
+    bool disableTools = false;
 
     CLI::App cli{"vibecpp"};
     cli.add_option("--type", clientType, "LLM client type. Supported types: \"ollama\", \"openai\".");
     cli.add_option("--model", clientModel, "LLM name.");
     cli.add_option("--server", clientEndpoint, "LLM API endpoint URL.");
     cli.add_option("--api-key", clientApiKey, "LLM API key.");
-    cli.add_flag("--notools", disableDefaultTools, "Disable default tools (use custom tools only).");
+    cli.add_flag("--ndt", disableDefaultTools, "Disable default tools.");
+    cli.add_flag("--nct", disableCustomTools, "Disable custom tools.");
+    cli.add_flag("--nt", disableTools, "Disable all tools.");
     cli.add_flag("-d", debugEnabled, "Enable debug logging mode.");
 
     try
@@ -96,10 +101,18 @@ int main(int argc, char** argv)
     client->setModel(clientModel);
     auto conv = std::make_shared<ConversationLLM>();
 
+    if(disableTools)
+    {
+        disableCustomTools = true;
+        disableDefaultTools = true;
+    }
+
     if(!disableDefaultTools)
         conv->loadDefaultTools();
 
-    conv->loadToolsFromFile(agentUtils::getHomeDirectory() + ".custom.vibecpp");
+    if(!disableCustomTools)
+        conv->loadToolsFromFile(agentUtils::getHomeDirectory() + ".custom.vibecpp");
+
     conv->setClient(std::move(client));
     conv->setPrintCallback([](const std::string& incoming){
         if(incoming.starts_with("Tool results:"))
@@ -121,14 +134,23 @@ int main(int argc, char** argv)
 
     if(outgoingMessage.empty()) // chat mode
     {
+        linenoise::SetMultiLine(true);
+        linenoise::SetHistoryMaxLen(10);
+        
         std::cout << fmt::format("Endpoint: {}\nType: {}\nModel: {}", 
             clientEndpoint, clientType, clientModel) << std::endl;
         std::cout << "Ask your first question." << std::endl;
-        while (true) {
+        while (true) 
+        {
             std::cout << "==============================" << std::endl;
-            std::cout << "You: ";
             std::string input;
-            std::getline(std::cin, input);
+            auto quit = linenoise::Readline("You: ", input);
+            if (quit) 
+            {
+                std::cout << "Exiting interactive chat mode..." << std::endl;
+                break;
+            }
+            linenoise::AddHistory(input.c_str());
             conv->handleUserInput(input);
         }
     }
